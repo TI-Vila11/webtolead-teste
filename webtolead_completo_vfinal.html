@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Teste WebToLead + UTM</title>
+
+  <!-- Captura os UTM da URL e salva em cookies -->
+  <script>
+    function setCookie(name, value, days = 7) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+    }
+
+    function storeUTMsInCookies() {
+      const params = new URLSearchParams(window.location.search);
+      const utmParams = ['utm_campaign', 'utm_content', 'utm_medium', 'utm_source', 'utm_term'];
+
+      utmParams.forEach(param => {
+        const value = params.get(param);
+        if (value) setCookie(param, value);
+      });
+    }
+
+    storeUTMsInCookies();
+  </script>
+</head>
+<body>
+
+  <h2>Formulário de Teste – WebToLead</h2>
+
+  <form action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8&orgId=00D6g0000025fNG" method="POST">
+    
+    <input type="hidden" name="oid" value="00D6g0000025fNG">
+    <input type="hidden" name="recordType" value="012HY0000004Ld7" />
+    <input type="hidden" id="lead_source" name="lead_source" value="Site" />
+
+    <label for="first_name">Primeiro Nome</label>
+    <input id="first_name" maxlength="40" name="first_name" size="20" type="text" /><br>
+
+    <label for="last_name">Sobrenome</label>
+    <input id="last_name" maxlength="80" name="last_name" size="20" type="text" /><br>
+
+    <label for="mobile">Celular</label>
+    <input id="mobile" maxlength="40" name="mobile" size="20" type="text" /><br>
+
+    <label for="email">Email</label>
+    <input id="email" maxlength="80" name="email" size="20" type="text" /><br>
+
+    <label for="bul">Prédio</label>
+    <select id="bul" name="Region_Id__c">
+      <option value="">-- Nenhum --</option>
+      <option value="a0sHY000000C1WqYAK">Vila Madalena</option>
+      <option value="a0sHY000000C1WnYAK">Bela Vista – Rua Barata Ribeiro</option>
+      <option value="a0sHY000000C1WnYAK">Bela Vista – Rua Frei Caneca</option>
+      <option value="a0sHY000000C1WoYAK">Paraíso</option>
+      <option value="a0sHY000000C1WrYAK">Vila Mariana</option>          
+      <option value="a0sHY000000C1WpYAK">Pinheiros – Avenida Rebouças</option>
+      <option value="a0sNp0000001gy5IAA">Paraiso Paulista</option>
+    </select><br/>
+
+    <label for="ltype">Tipo de Locação</label>
+    <select id="ltype" name="reda__Lead_Type__c">
+      <option value="Individual">Individual</option>
+      <option value="Company">Empresa</option>          
+    </select><br/>
+
+    <label for="company">Empresa</label>
+    <input id="company" maxlength="40" name="company" size="20" type="text" /><br/>
+
+    <!-- Campos UTM ocultos -->
+    <input type="hidden" id="00NNp00000hZGVq" name="00NNp00000hZGVq" />
+    <input type="hidden" id="00NNp00000hZ0UJ" name="00NNp00000hZ0UJ" />
+    <input type="hidden" id="00NNp00000hZTpc" name="00NNp00000hZTpc" />
+    <input type="hidden" id="00NNp00000hZU90" name="00NNp00000hZU90" />
+    <input type="hidden" id="00NNp00000hZJ5S" name="00NNp00000hZJ5S" />
+
+    <br><br>
+    <input type="submit" value="Enviar">
+
+  </form>
+
+  <!-- Script para preencher os campos UTM com valores dos cookies -->
+  <script>
+    function getCookie(name) {
+      const match = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+      return match ? decodeURIComponent(match[2]) : '';
+    }
+
+    window.addEventListener('load', () => {
+      const mappings = {
+        '00NNp00000hZGVq': 'utm_campaign',
+        '00NNp00000hZ0UJ': 'utm_content',
+        '00NNp00000hZTpc': 'utm_medium',
+        '00NNp00000hZU90': 'utm_source',
+        '00NNp00000hZJ5S': 'utm_term'
+      };
+
+      for (const [fieldId, cookieName] of Object.entries(mappings)) {
+        const el = document.getElementById(fieldId);
+        if (el) {
+          el.value = getCookie(cookieName);
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
